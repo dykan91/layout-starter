@@ -132,8 +132,8 @@ function buildStyles() {
   };
 
   return target
-    .pipe(sass(sassOptions))
-    .pipe(autoprefixer(autoprefixerOptions))
+    .pipe(sass(sassOptions)).on('error', config.errorHandler)
+    .pipe(autoprefixer(autoprefixerOptions)).on('error', config.errorHandler)
     .pipe(gulp.dest(path.join(config.paths.tmp, 'styles')));
 }
 

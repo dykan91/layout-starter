@@ -22,6 +22,7 @@
     "gulp-eslint": "^3.0.1",
     "gulp-inject": "^4.1.0",
     "gulp-sass": "^2.3.2",
+    "gulp-util": "^3.0.7",
     "wiredep": "^4.0.0"
   }
 }

@@ -1,0 +1,27 @@
+{
+  "name": "layout-starter",
+  "version": "1.0.0",
+  "description": "Layout Starter",
+  "scripts": {
+    "init": "npm install && bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theignatiev/layout-starter.git"
+  },
+  "author": "Sergey Ignatiev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/theignatiev/layout-starter/issues"
+  },
+  "homepage": "https://github.com/theignatiev/layout-starter#readme",
+  "devDependencies": {
+    "browser-sync": "^2.14.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-inject": "^4.1.0",
+    "gulp-sass": "^2.3.2",
+    "wiredep": "^4.0.0"
+  }
+}

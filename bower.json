@@ -1,0 +1,19 @@
+{
+  "name": "layout-starter",
+  "description": "Layout Starter",
+  "authors": [
+    "Sergey Ignatiev"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/theignatiev/layout-starter",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "normalize-css": "normalize.css#^4.2.0"
+  }
+}

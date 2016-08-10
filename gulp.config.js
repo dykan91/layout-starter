@@ -5,16 +5,19 @@ module.exports = config;
 function config(path) {
   'use strict';
 
-  var SRC_DIR = 'src',
-      TMP_DIR = '.tmp',
-      config  = {};
+  var SRC_DIR  = 'src',
+      DIST_DIR = 'dist',
+      TMP_DIR  = '.tmp',
+      config   = {};
 
   // Paths
   config.paths = {
     src: SRC_DIR,
+    dist: DIST_DIR,
     tmp: TMP_DIR,
     scripts: path.join(SRC_DIR, 'scripts'),
-    styles: path.join(SRC_DIR, 'styles')
+    styles: path.join(SRC_DIR, 'styles'),
+    images: path.join(SRC_DIR, 'images')
   };
 
   // Wiredep

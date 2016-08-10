@@ -1,13 +1,26 @@
 'use strict';
 
-var path         = require('path');
-var gulp         = require('gulp');
-var eslint       = require('gulp-eslint');
-var sass         = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var inject       = require('gulp-inject');
-var wiredep      = require('wiredep').stream;
-var browserSync  = require('browser-sync').create();
+var path           = require('path');
+var gulp           = require('gulp');
+var eslint         = require('gulp-eslint');
+var sass           = require('gulp-sass');
+var sourcemaps     = require('gulp-sourcemaps');
+var autoprefixer   = require('gulp-autoprefixer');
+var inject         = require('gulp-inject');
+var useref         = require('gulp-useref');
+var filter         = require('gulp-filter');
+var gulpif         = require('gulp-if');
+var htmlmin        = require('gulp-htmlmin');
+var imagemin       = require('gulp-imagemin');
+var cleanCSS       = require('gulp-clean-css');
+var uglify         = require('gulp-uglify');
+var saveLicense    = require('uglify-save-license');
+var lazypipe       = require('lazypipe');
+var mainBowerFiles = require('main-bower-files');
+var runSequence    = require('run-sequence');
+var del            = require('del');
+var wiredep        = require('wiredep').stream;
+var browserSync    = require('browser-sync').create();
 
 // Config
 var config = require('./gulp.config')(path);
@@ -104,9 +117,96 @@ gulp.task('serve', ['watch'], function () {
   ]);
 });
 
+// Serve Dist
+gulp.task('serve:dist', ['build'], function () {
+  browserSyncInit(config.paths.dist);
+});
+
+// Html
+gulp.task('html', ['inject'], function () {
+  var target = gulp.src(path.join(config.paths.tmp, '*.html'));
+
+  var userefOptions = {
+    searchPath: [
+      config.paths.src,
+      config.paths.tmp
+    ]
+  };
+
+  var scripts = lazypipe()
+    .pipe(sourcemaps.init)
+    .pipe(uglify, {
+      preserveComments: saveLicense
+    })
+    .pipe(sourcemaps.write, 'maps');
+
+  var styles = lazypipe()
+    .pipe(sourcemaps.init)
+    .pipe(cleanCSS, {
+      processImport: false
+    })
+    .pipe(sourcemaps.write, 'maps');
+
+  return target
+    .pipe(useref(userefOptions))
+    .pipe(gulpif('**/*.js', scripts()))
+    .pipe(gulpif('**/*.css', styles()))
+    .pipe(gulp.dest(config.paths.dist));
+});
+
+// Clean
+gulp.task('clean', function () {
+  var target = [
+    config.paths.dist,
+    config.paths.tmp
+  ];
+
+  return del(target);
+});
+
+// Images
+gulp.task('images', function () {
+  var target = gulp.src(path.join(config.paths.images, '**/*'));
+
+  return target
+    .pipe(imagemin())
+    .pipe(gulp.dest(path.join(config.paths.dist, 'images')));
+});
+
+// Copy Files
+gulp.task('copy-files', function () {
+  var target = gulp.src([
+    path.join(config.paths.src, '**/*'),
+    path.join('!' + config.paths.src, '**/*.{html,js,scss}'),
+    path.join('!' + config.paths.images, '**/*')
+  ]);
+
+  var filesFilter = filter(function (file) {
+    return file.stat.isFile();
+  });
+
+  return target
+    .pipe(filesFilter)
+    .pipe(gulp.dest(config.paths.dist));
+});
+
+// Copy Bower Files
+gulp.task('copy-bower-files', function () {
+  var fontsFilter = filter('**/*.{eot,svg,ttf,woff,woff2}');
+
+  return gulp.src(mainBowerFiles())
+    .pipe(fontsFilter)
+    .pipe(gulp.dest(path.join(config.paths.dist, 'fonts')));
+});
+
+// Build
+gulp.task('build', function (callback) {
+  runSequence('clean', 'html', 'images', 'copy-files', 'copy-bower-files', callback);
+});
+
 // Default
 gulp.task('default', function () {
-  gulp.start('serve');
+  gulp.start('build');
 });
 
 // Build Scripts
@@ -132,8 +232,10 @@ function buildStyles() {
   };
 
   return target
+    .pipe(sourcemaps.init())
     .pipe(sass(sassOptions)).on('error', config.errorHandler)
     .pipe(autoprefixer(autoprefixerOptions)).on('error', config.errorHandler)
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(path.join(config.paths.tmp, 'styles')));
 }
 

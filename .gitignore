@@ -1,6 +1,9 @@
 # Temporary folder
 .tmp/
 
+# Build
+dist/
+
 # Node Modules
 node_modules/
 

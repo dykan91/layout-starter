@@ -12,8 +12,5 @@
     "bower_components",
     "test",
     "tests"
-  ],
-  "dependencies": {
-    "normalize-css": "normalize.css#^4.2.0"
-  }
+  ]
 }

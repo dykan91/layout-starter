@@ -10,7 +10,6 @@ var inject         = require('gulp-inject');
 var useref         = require('gulp-useref');
 var filter         = require('gulp-filter');
 var gulpif         = require('gulp-if');
-var htmlmin        = require('gulp-htmlmin');
 var imagemin       = require('gulp-imagemin');
 var cleanCSS       = require('gulp-clean-css');
 var uglify         = require('gulp-uglify');
